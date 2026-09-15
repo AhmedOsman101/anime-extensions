@@ -30,7 +30,7 @@ class Animeiat :
 
     override val name = "Animeiat"
 
-    override val baseUrl = "https://api.animeiat.co/v1"
+    override val baseUrl = "https://api.animeiat.tv/v1"
 
     override val lang = "ar"
 
@@ -49,7 +49,7 @@ class Animeiat :
             SAnime.create().apply {
                 url = "/anime/${it.slug}"
                 title = it.anime_name
-                thumbnail_url = "https://api.animeiat.co/storage/${it.poster_path}"
+                thumbnail_url = "https://api.animeiat.tv/storage/${it.poster_path}"
             }
         }
         val hasNextPage = responseJson.meta.current_page < responseJson.meta.last_page
@@ -121,7 +121,7 @@ class Animeiat :
             author = details.studios.joinToString { it.name }
             genre = details.genres.joinToString { it.name }
             description = details.story
-            thumbnail_url = "https://api.animeiat.co/storage/${details.poster_path}"
+            thumbnail_url = "https://api.animeiat.tv/storage/${details.poster_path}"
         }
         return anime
     }
@@ -161,7 +161,7 @@ class Animeiat :
             SAnime.create().apply {
                 url = "/anime/${it.slug.substringBefore("-episode-")}"
                 title = it.title
-                thumbnail_url = "https://api.animeiat.co/storage/${it.poster_path}"
+                thumbnail_url = "https://api.animeiat.tv/storage/${it.poster_path}"
             }
         }
         val hasNextPage = responseJson.meta.current_page < responseJson.meta.last_page
