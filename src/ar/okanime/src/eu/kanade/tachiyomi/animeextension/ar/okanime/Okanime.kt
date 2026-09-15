@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.animeextension.ar.okanime
 
+import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceScreen
@@ -32,7 +33,7 @@ class Okanime :
 
     override val name = "Okanime"
 
-    override val baseUrl = "https://ww3.okanime.xyz"
+    override val baseUrl get() = preferences.getString(PREF_BASE_URL_KEY, DEFAULT_BASE_URL) ?: DEFAULT_BASE_URL
 
     override val lang = "ar"
 
@@ -261,11 +262,26 @@ class Okanime :
                 preferences.edit().putStringSet(key, newValue as Set<String>).commit()
             }
         }.also(screen::addPreference)
+
+        EditTextPreference(screen.context).apply {
+            key = PREF_BASE_URL_KEY
+            title = "Server URL"
+            summary = "Custom server URL (requires app restart). Current: ${preferences.getString(PREF_BASE_URL_KEY, DEFAULT_BASE_URL)}"
+            setDefaultValue(DEFAULT_BASE_URL)
+            dialogTitle = "Server URL"
+            setOnPreferenceChangeListener { preference, newValue ->
+                preference.summary = "Custom server URL (requires app restart). Current: $newValue"
+                true
+            }
+        }.also(screen::addPreference)
     }
 
     // ============================= Utilities ==============================
     companion object {
         const val PREFIX_SEARCH = "id:"
+
+        private const val DEFAULT_BASE_URL = "https://ww3.okanime.xyz"
+        private const val PREF_BASE_URL_KEY = "override_base_url"
 
         private val VID_BOM_DOMAINS = listOf("vidbam", "vadbam", "vidbom", "vidbm")
 
