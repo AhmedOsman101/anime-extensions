@@ -548,7 +548,9 @@ class AniZone :
         val vidstack = document.vidstackData()
 
         val subtitles = filterSubs(
-            vidstack?.subtitles?.filter { it.file.isNotBlank() }?.map { Track(it.file.replace("\\/", "/"), it.title) }
+            vidstack?.subtitles?.mapNotNull { sub ->
+                sub.file?.takeIf { it.isNotBlank() }?.let { Track(it.replace("\\/", "/"), sub.title ?: "") }
+            }
                 ?: document.select("track[kind=subtitles]").mapNotNull {
                     val src = it.attr("src").replace("\\/", "/").takeIf { s -> s.isNotBlank() } ?: return@mapNotNull null
                     Track(src, it.attr("label"))
@@ -667,11 +669,11 @@ class AniZone :
     private fun LivewireDto.getHtml(mapKey: String): Document {
         val data = this.components.firstOrNull() ?: return parseBodyFragment("", baseUrl)
 
-        snapShots[mapKey] = data.snapshot.replace("\\\"", "\"")
+        snapShots[mapKey] = data.snapshot?.replace("\\\"", "\"") ?: snapShots[mapKey] ?: ""
 
         return parseBodyFragment(
-            data.effects.html.replace("\\\"", "\"")
-                .replace("\\n", ""),
+            data.effects?.html?.replace("\\\"", "\"")
+                ?.replace("\\n", "") ?: "",
             baseUrl,
         )
     }

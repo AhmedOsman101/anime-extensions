@@ -135,14 +135,14 @@ object TitleListSerializer : KSerializer<Map<String, String>> {
 
 @Serializable
 class VidstackConfig(
-    val src: String = "",
+    val src: String? = null,
     val subtitles: List<VidstackSubtitle> = emptyList(),
 )
 
 @Serializable
 class VidstackSubtitle(
-    val title: String = "",
-    val file: String = "",
+    val title: String? = null,
+    val file: String? = null,
 )
 
 class VideoData(
