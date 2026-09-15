@@ -139,7 +139,7 @@ class Animerco :
             .eachText()
             .let { items ->
                 when {
-                    items.all { it.contains("مكتمل") } -> SAnime.COMPLETED
+                    items.isNotEmpty() && items.all { it.contains("مكتمل") } -> SAnime.COMPLETED
                     items.any { it.contains("يعرض الأن") } -> SAnime.ONGOING
                     else -> SAnime.UNKNOWN
                 }
