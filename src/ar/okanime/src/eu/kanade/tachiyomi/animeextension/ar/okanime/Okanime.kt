@@ -144,7 +144,7 @@ class Okanime :
     }
 
     // ============================== Episodes ==============================
-    override fun episodeListSelector() = "a.ep-compact-btn"
+    override fun episodeListSelector() = "a.ep-compact-btn, div.row div.episode-card div.anime-title a"
 
     override fun episodeFromElement(element: Element) = SEpisode.create().apply {
         setUrlWithoutDomain(element.attr("href"))
