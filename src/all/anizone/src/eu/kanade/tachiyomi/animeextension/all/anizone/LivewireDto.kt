@@ -12,12 +12,12 @@ class LivewireDto(
 ) {
     @Serializable
     class ComponentDto(
-        val snapshot: String,
-        val effects: EffectsDto,
+        val snapshot: String = "",
+        val effects: EffectsDto = EffectsDto(),
     ) {
         @Serializable
         class EffectsDto(
-            val html: String,
+            val html: String = "",
             val dispatches: List<DispatchDto> = emptyList(),
         )
     }
