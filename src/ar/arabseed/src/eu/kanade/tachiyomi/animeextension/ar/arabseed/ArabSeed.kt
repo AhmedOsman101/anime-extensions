@@ -30,7 +30,7 @@ class ArabSeed :
 
     // TODO: Check frequency of url changes to potentially
     // add back overridable baseurl preference
-    override val baseUrl = "https://m.asd.homes"
+    override val baseUrl = "https://arabseed.rent"
 
     override val lang = "ar"
 
