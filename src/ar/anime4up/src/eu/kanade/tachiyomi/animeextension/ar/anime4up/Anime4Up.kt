@@ -37,7 +37,7 @@ class Anime4Up :
 
     override val name = "Anime4Up"
 
-    override val baseUrl = "https://w1.anime4up.rest"
+    override val baseUrl = "https://4b.1i2cqoi.shop"
 
     override val lang = "ar"
 
