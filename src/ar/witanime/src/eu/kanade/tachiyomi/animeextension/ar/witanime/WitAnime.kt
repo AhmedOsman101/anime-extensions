@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.animeextension.ar.witanime
 
 import android.util.Base64
+import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceScreen
 import aniyomi.lib.dailymotionextractor.DailymotionExtractor
@@ -31,7 +32,7 @@ class WitAnime :
 
     override val name = "WIT ANIME"
 
-    override val baseUrl = "https://witanime.onl"
+    override val baseUrl get() = preferences.getString(PREF_BASE_URL_KEY, DEFAULT_BASE_URL) ?: DEFAULT_BASE_URL
 
     override val lang = "ar"
 
@@ -233,6 +234,17 @@ class WitAnime :
                 preferences.edit().putString(key, entry).commit()
             }
         }.also(screen::addPreference)
+        EditTextPreference(screen.context).apply {
+            key = PREF_BASE_URL_KEY
+            title = "Server URL"
+            summary = "Custom server URL (requires app restart). Current: ${preferences.getString(PREF_BASE_URL_KEY, DEFAULT_BASE_URL)}"
+            setDefaultValue(DEFAULT_BASE_URL)
+            dialogTitle = "Server URL"
+            setOnPreferenceChangeListener { preference, newValue ->
+                preference.summary = "Custom server URL (requires app restart). Current: $newValue"
+                true
+            }
+        }.also(screen::addPreference)
     }
 
     // ============================= Utilities ==============================
@@ -246,6 +258,8 @@ class WitAnime :
         .let { String(Base64.decode(it, Base64.DEFAULT)) }
 
     companion object {
+        private const val DEFAULT_BASE_URL = "https://witanime.onl"
+        private const val PREF_BASE_URL_KEY = "override_base_url"
         // From TukTukCinema(AR)
         private val VIDBOM_REGEX by lazy { Regex("//v[aie]d[bp][aoe]?m") }
 
