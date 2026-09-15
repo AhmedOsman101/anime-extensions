@@ -41,7 +41,7 @@ class Animerco :
 
     override val name = "Animerco"
 
-    override val baseUrl = "https://zeta.animerco.org"
+    override val baseUrl = "https://det.animerco.org"
 
     override val lang = "ar"
 
@@ -134,7 +134,7 @@ class Animerco :
             }
         }
 
-        status = document.select("ul.chapters-list a.se-title > span.badge")
+        status = document.select("ul.episodes-lists span.badge")
             .eachText()
             .let { items ->
                 when {
@@ -213,7 +213,14 @@ class Animerco :
     private val yourUploadExtractor by lazy { YourUploadExtractor(client) }
 
     private suspend fun getPlayerVideos(player: Element): List<Video> {
-        val url = getPlayerUrl(player) ?: return emptyList()
+        var url = getPlayerUrl(player) ?: return emptyList()
+        // New domain wraps the real embed in an intermediate jwplayer page
+        if ("/jwplayer/" in url) {
+            url = client.newCall(GET(url, headers))
+                .awaitSuccess().useAsJsoup()
+                .selectFirst("iframe")?.attr("abs:src")
+                .takeIf { !it.isNullOrBlank() } ?: return emptyList()
+        }
         val name = player.selectFirst("span.server")?.text()?.lowercase() ?: "Unknown"
         return when {
             "ok.ru" in url -> okruExtractor.videosFromUrl(url)
@@ -246,6 +253,7 @@ class Animerco :
     private suspend fun getPlayerUrl(player: Element): String? {
         val body = FormBody.Builder()
             .add("action", "player_ajax")
+            .add("security", player.attr("data-nonce"))
             .add("post", player.attr("data-post"))
             .add("nume", player.attr("data-nume"))
             .add("type", player.attr("data-type"))
